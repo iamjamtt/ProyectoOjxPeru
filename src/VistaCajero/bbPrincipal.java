@@ -21,7 +21,6 @@ public class bbPrincipal extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-        
     }
 
     /**
@@ -35,7 +34,15 @@ public class bbPrincipal extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        escritorio = new javax.swing.JDesktopPane() {
+        panelRecarga = new javax.swing.JPanel();
+        txtRecarga = new javax.swing.JLabel();
+        panelAlquiler = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        panelDevolucion = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        panelSalir = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        escritorio = new javax.swing.JDesktopPane(){
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -43,7 +50,6 @@ public class bbPrincipal extends javax.swing.JFrame {
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        escritorio = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -62,15 +68,172 @@ public class bbPrincipal extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
+        panelRecarga.setBackground(new java.awt.Color(255, 255, 255));
+        panelRecarga.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelRecargaMouseMoved(evt);
+            }
+        });
+        panelRecarga.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelRecargaMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelRecargaMouseExited(evt);
+            }
+        });
+
+        txtRecarga.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        txtRecarga.setText("RECARGA");
+
+        javax.swing.GroupLayout panelRecargaLayout = new javax.swing.GroupLayout(panelRecarga);
+        panelRecarga.setLayout(panelRecargaLayout);
+        panelRecargaLayout.setHorizontalGroup(
+            panelRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRecargaLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(txtRecarga)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelRecargaLayout.setVerticalGroup(
+            panelRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRecargaLayout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(txtRecarga)
+                .addContainerGap())
+        );
+
+        panelAlquiler.setBackground(new java.awt.Color(255, 255, 255));
+        panelAlquiler.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelAlquilerMouseMoved(evt);
+            }
+        });
+        panelAlquiler.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelAlquilerMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelAlquilerMouseExited(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jLabel2.setText("ALQUILER");
+
+        javax.swing.GroupLayout panelAlquilerLayout = new javax.swing.GroupLayout(panelAlquiler);
+        panelAlquiler.setLayout(panelAlquilerLayout);
+        panelAlquilerLayout.setHorizontalGroup(
+            panelAlquilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelAlquilerLayout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelAlquilerLayout.setVerticalGroup(
+            panelAlquilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAlquilerLayout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addContainerGap())
+        );
+
+        panelDevolucion.setBackground(new java.awt.Color(255, 255, 255));
+        panelDevolucion.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelDevolucionMouseMoved(evt);
+            }
+        });
+        panelDevolucion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelDevolucionMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelDevolucionMouseExited(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jLabel3.setText("DEVOLUCION");
+
+        javax.swing.GroupLayout panelDevolucionLayout = new javax.swing.GroupLayout(panelDevolucion);
+        panelDevolucion.setLayout(panelDevolucionLayout);
+        panelDevolucionLayout.setHorizontalGroup(
+            panelDevolucionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDevolucionLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(jLabel3)
+                .addContainerGap(40, Short.MAX_VALUE))
+        );
+        panelDevolucionLayout.setVerticalGroup(
+            panelDevolucionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDevolucionLayout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addContainerGap())
+        );
+
+        panelSalir.setBackground(new java.awt.Color(255, 50, 50));
+        panelSalir.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelSalirMouseMoved(evt);
+            }
+        });
+        panelSalir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelSalirMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelSalirMouseExited(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("SALIR");
+
+        javax.swing.GroupLayout panelSalirLayout = new javax.swing.GroupLayout(panelSalir);
+        panelSalir.setLayout(panelSalirLayout);
+        panelSalirLayout.setHorizontalGroup(
+            panelSalirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSalirLayout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelSalirLayout.setVerticalGroup(
+            panelSalirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSalirLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelRecarga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelAlquiler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelDevolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 506, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(panelAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(panelDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 259, Short.MAX_VALUE)
+                .addComponent(panelSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         escritorio.setBackground(new java.awt.Color(242, 242, 242));
@@ -79,7 +242,7 @@ public class bbPrincipal extends javax.swing.JFrame {
         escritorio.setLayout(escritorioLayout);
         escritorioLayout.setHorizontalGroup(
             escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 632, Short.MAX_VALUE)
+            .addGap(0, 608, Short.MAX_VALUE)
         );
         escritorioLayout.setVerticalGroup(
             escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,7 +260,7 @@ public class bbPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(escritorio)
+                .addComponent(escritorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -118,6 +281,74 @@ public class bbPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void panelRecargaMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRecargaMouseMoved
+        // TODO add your handling code here:
+        panelRecarga.setBackground(new Color(200,200,200));
+    }//GEN-LAST:event_panelRecargaMouseMoved
+
+    private void panelRecargaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRecargaMouseExited
+        // TODO add your handling code here:
+        panelRecarga.setBackground(new Color(255,255,255));
+    }//GEN-LAST:event_panelRecargaMouseExited
+
+    private void panelAlquilerMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAlquilerMouseMoved
+        // TODO add your handling code here:
+        panelAlquiler.setBackground(new Color(200,200,200));
+    }//GEN-LAST:event_panelAlquilerMouseMoved
+
+    private void panelAlquilerMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAlquilerMouseExited
+        // TODO add your handling code here:
+        panelAlquiler.setBackground(new Color(255,255,255));
+    }//GEN-LAST:event_panelAlquilerMouseExited
+
+    private void panelDevolucionMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelDevolucionMouseMoved
+        // TODO add your handling code here:
+        panelDevolucion.setBackground(new Color(200,200,200));
+    }//GEN-LAST:event_panelDevolucionMouseMoved
+
+    private void panelDevolucionMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelDevolucionMouseExited
+        // TODO add your handling code here:
+        panelDevolucion.setBackground(new Color(255,255,255));
+    }//GEN-LAST:event_panelDevolucionMouseExited
+
+    private void panelRecargaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRecargaMouseClicked
+        // TODO add your handling code here:
+        ccMenuRecargaa menuRecarga = new ccMenuRecargaa();
+        escritorio.add(menuRecarga);
+        menuRecarga.show();
+    }//GEN-LAST:event_panelRecargaMouseClicked
+
+    private void panelAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAlquilerMouseClicked
+        // TODO add your handling code here:
+        ddMenuAlquierr menuAlquiler = new ddMenuAlquierr();
+        escritorio.add(menuAlquiler);
+        menuAlquiler.show();
+    }//GEN-LAST:event_panelAlquilerMouseClicked
+
+    private void panelDevolucionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelDevolucionMouseClicked
+        // TODO add your handling code here:
+        eeMenuDevolucionn menuDevolucion = new eeMenuDevolucionn();
+        escritorio.add(menuDevolucion);
+        menuDevolucion.show();                       
+    }//GEN-LAST:event_panelDevolucionMouseClicked
+
+    private void panelSalirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSalirMouseExited
+        // TODO add your handling code here:
+        panelSalir.setBackground(new Color(255,50,50));
+    }//GEN-LAST:event_panelSalirMouseExited
+
+    private void panelSalirMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSalirMouseMoved
+        // TODO add your handling code here:
+        panelSalir.setBackground(new Color(255,0,0));
+    }//GEN-LAST:event_panelSalirMouseMoved
+
+    private void panelSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSalirMouseClicked
+        // TODO add your handling code here:
+        aaLogearTarjeta login = new aaLogearTarjeta();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_panelSalirMouseClicked
 
     /**
      * @param args the command line arguments
@@ -155,8 +386,16 @@ public class bbPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane escritorio;
+    public static javax.swing.JDesktopPane escritorio;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel panelAlquiler;
+    private javax.swing.JPanel panelDevolucion;
+    private javax.swing.JPanel panelRecarga;
+    private javax.swing.JPanel panelSalir;
+    private javax.swing.JLabel txtRecarga;
     // End of variables declaration//GEN-END:variables
 }

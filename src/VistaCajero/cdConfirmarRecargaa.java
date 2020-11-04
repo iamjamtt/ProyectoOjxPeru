@@ -15,6 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,6 +32,8 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
      */
     PlaceHolder holder;
     public static double total = 0;
+    String nroOpeacion;
+    double saldoIniciall;
     
     
     public cdConfirmarRecargaa() {
@@ -49,6 +55,7 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
             }
             
             total = bbPrincipal.saldoTarjeta + ccMenuRecargaa.monto;
+            saldoIniciall = bbPrincipal.saldoTarjeta;
             bbPrincipal.saldoTarjeta = total;
             System.out.println("Monto Total >> " + total);
             
@@ -74,6 +81,85 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
         }   
     }
     
+    String codigosclientes(){
+     int j;
+        int cont=1;
+        String num="";
+        String c="";
+        String SQL="select max(nroOperacion) from VoucherTarjeta";
+        
+       // String SQL="select count(*) from factura";
+        //String SQL="SELECT MAX(cod_emp) AS cod_emp FROM empleado";
+        //String SQL="SELECT @@identity AS ID";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs=st.executeQuery(SQL);
+            if(rs.next())
+            {              
+                 c=rs.getString(1);
+            }
+                    
+            if(c==null){
+                nroOpeacion = "RR0001";
+            }
+            else{
+                char r1=c.charAt(2);
+                char r2=c.charAt(3);
+                char r3=c.charAt(4);
+                char r4=c.charAt(5);
+                String r="";
+                r=""+r1+r2+r3+r4;
+            
+                 j=Integer.parseInt(r);
+                 GenerarCodigos gen= new GenerarCodigos();
+                 gen.generar(j);
+                 nroOpeacion = "RR"+gen.serie();            
+            }            
+         
+        } catch (SQLException ex) {
+            System.out.println("Error codigo recarga voucher -- " + ex);
+        }
+        return nroOpeacion;
+    }
+    
+    void ingresarDatosDeRecarga(){
+        double importeCargado = ccMenuRecargaa.monto;
+        double saldoFinal = total;
+        double saldoInicial = saldoIniciall;
+        nroOpeacion = codigosclientes();
+        int idTarjeta = aaLogearTarjeta.idTarjeta;
+        
+        String sql = "INSERT INTO VoucherTarjeta (nroOperacion,importeCargado,saldoInicial,saldoFinal,fechaOperacion,idTarjeta) VALUES (?,?,?,?,?,?)";
+            try {
+                PreparedStatement pst  = cn.prepareStatement(sql);
+                pst.setString(1, nroOpeacion);
+                pst.setDouble(2, importeCargado);
+                pst.setDouble(3, saldoInicial);
+                pst.setDouble(4, saldoFinal);
+
+                Date fechaActual = new Date();
+                int anioactual = fechaActual.getYear()+1900;
+                int mesactual = fechaActual.getMonth()+1;
+                int diaactual = fechaActual.getDate();
+
+                int hora = fechaActual.getHours();
+                int minuto = fechaActual.getMinutes();
+                int segundo = fechaActual.getSeconds();
+
+                String fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
+
+                pst.setString(5, fecha);
+                pst.setInt(6, idTarjeta);  
+                
+                int n=pst.executeUpdate();
+                if(n>0){
+                JOptionPane.showMessageDialog(null, "Registro Guardado con Exito");
+                }
+
+            } catch (SQLException ex) {
+                System.out.println("Error al ingresar datos del VoucherTarjeta: " + ex);
+            }
+    }
     
 
     /**
@@ -160,6 +246,7 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
         String contra = new String(txtContraTarjeta.getPassword());
         
         confirmarTarjeta(contra);
+        ingresarDatosDeRecarga();
         ccdOtroMontoRecarga.otroMonto = 0;
         ccMenuRecargaa.monto = 0;
     }//GEN-LAST:event_btnConfirmarActionPerformed

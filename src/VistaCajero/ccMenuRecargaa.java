@@ -52,6 +52,8 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
         txtMontoRecarga = new javax.swing.JTextField();
         panelConfirmarRecarga = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
+        panelConsultarUltimaRecarga = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -298,15 +300,50 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
         panelConfirmarRecargaLayout.setHorizontalGroup(
             panelConfirmarRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelConfirmarRecargaLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addContainerGap(26, Short.MAX_VALUE)
                 .addComponent(jLabel8)
                 .addGap(19, 19, 19))
         );
         panelConfirmarRecargaLayout.setVerticalGroup(
             panelConfirmarRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelConfirmarRecargaLayout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        panelConsultarUltimaRecarga.setBackground(new java.awt.Color(204, 204, 0));
+        panelConsultarUltimaRecarga.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelConsultarUltimaRecargaMouseMoved(evt);
+            }
+        });
+        panelConsultarUltimaRecarga.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelConsultarUltimaRecargaMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelConsultarUltimaRecargaMouseExited(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel9.setText("Consultar Ultima Recarga");
+
+        javax.swing.GroupLayout panelConsultarUltimaRecargaLayout = new javax.swing.GroupLayout(panelConsultarUltimaRecarga);
+        panelConsultarUltimaRecarga.setLayout(panelConsultarUltimaRecargaLayout);
+        panelConsultarUltimaRecargaLayout.setHorizontalGroup(
+            panelConsultarUltimaRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelConsultarUltimaRecargaLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addComponent(jLabel9)
+                .addGap(19, 19, 19))
+        );
+        panelConsultarUltimaRecargaLayout.setVerticalGroup(
+            panelConsultarUltimaRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelConsultarUltimaRecargaLayout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -327,10 +364,14 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
                     .addComponent(panel200, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(116, 116, 116))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelConfirmarRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelConsultarUltimaRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelConfirmarRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtMontoRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -338,7 +379,7 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -356,7 +397,9 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
                     .addComponent(panel500, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelOtroMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                .addComponent(panelConfirmarRecarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(panelConfirmarRecarga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelConsultarUltimaRecarga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -493,6 +536,26 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
         panelConfirmarRecarga.setBackground(new Color(142,255,142));
     }//GEN-LAST:event_panelConfirmarRecargaMouseMoved
 
+    private void panelConsultarUltimaRecargaMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelConsultarUltimaRecargaMouseMoved
+        // TODO add your handling code here:
+        panelConsultarUltimaRecarga.setBackground(new Color(204,204,204));
+    }//GEN-LAST:event_panelConsultarUltimaRecargaMouseMoved
+
+    private void panelConsultarUltimaRecargaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelConsultarUltimaRecargaMouseClicked
+        // TODO add your handling code here:
+        panelConsultarUltimaRecarga.setBackground(new Color(204,204,204));
+        ccdeConsultarUltimaRecarga ultRec = new ccdeConsultarUltimaRecarga();
+        bbPrincipal.escritorio.add(ultRec);
+        ultRec.toFront();
+        ultRec.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_panelConsultarUltimaRecargaMouseClicked
+
+    private void panelConsultarUltimaRecargaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelConsultarUltimaRecargaMouseExited
+        // TODO add your handling code here:
+        panelConsultarUltimaRecarga.setBackground(new Color(204,204,0));
+    }//GEN-LAST:event_panelConsultarUltimaRecargaMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -503,12 +566,14 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel panel100;
     private javax.swing.JPanel panel20;
     private javax.swing.JPanel panel200;
     private javax.swing.JPanel panel50;
     private javax.swing.JPanel panel500;
     private javax.swing.JPanel panelConfirmarRecarga;
+    private javax.swing.JPanel panelConsultarUltimaRecarga;
     private javax.swing.JPanel panelOtroMonto;
     private javax.swing.JTextField txtMontoRecarga;
     // End of variables declaration//GEN-END:variables

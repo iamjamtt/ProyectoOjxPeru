@@ -5,8 +5,16 @@
  */
 package VistaCajero;
 
+import Conexion.ConexionSQL;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,6 +26,7 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
      * Creates new form aaLogearTarjeta
      */
     PlaceHolder holder;
+    public static int idTarjeta;
     
     
     public aaLogearTarjeta() {
@@ -27,6 +36,37 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         holder = new PlaceHolder(txtNroTarjeta, "Nro Tarjeta");
         holder = new PlaceHolder(txtDNI, "Dni");
     }
+    
+    void verificar(String codigo, String dni){
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE c.dni = '"+dni+"' AND t.codigoTarjeta = '"+codigo+"'";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            int cont=0;
+            if(rs.next()){
+                idTarjeta = rs.getInt("idTarjeta");
+                cont++;
+            }
+            
+            System.out.println("idTarjeta >> " + idTarjeta);
+            
+            if(cont==1){
+                bbPrincipal principal = new bbPrincipal();
+                principal.setVisible(true);
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "No existe Cliente");
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Error Logear Cliente -- " + ex);
+        }   
+    }
+    
+    
+    
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -69,10 +109,10 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        txtNroTarjeta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtNroTarjeta.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         txtNroTarjeta.setToolTipText("");
 
-        txtDNI.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtDNI.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
 
         btnIniciarSesion.setBackground(new java.awt.Color(51, 255, 51));
         btnIniciarSesion.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
@@ -154,9 +194,10 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         // TODO add your handling code here:
-        bbPrincipal principal = new bbPrincipal();
-        principal.setVisible(true);
-        this.dispose();
+        String codigo = txtNroTarjeta.getText();
+        String dni = txtDNI.getText();
+        
+        verificar(codigo, dni);
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     /**
@@ -203,4 +244,6 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
     private javax.swing.JTextField txtDNI;
     private javax.swing.JTextField txtNroTarjeta;
     // End of variables declaration//GEN-END:variables
+Conexion.ConexionSQL cc = new ConexionSQL();
+Connection cn= ConexionSQL.conexionn();
 }

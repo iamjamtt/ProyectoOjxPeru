@@ -5,8 +5,17 @@
  */
 package VistaCajero;
 
+import Conexion.ConexionSQL;
+import static VistaCajero.aaLogearTarjeta.idTarjeta;
+import static VistaCajero.bbPrincipal.saldoTarjeta;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,6 +27,7 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
      * Creates new form cdConfirmarRecargaa
      */
     PlaceHolder holder;
+    public static double total = 0;
     
     
     public cdConfirmarRecargaa() {
@@ -26,6 +36,45 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
         holder = new PlaceHolder(txtContraTarjeta, "Contraseña");
         
     }
+    
+    void confirmarTarjeta(String contra){
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE t.contrasenia = '"+contra+"'" + " AND t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            int cont=0;
+            
+            if(rs.next()){
+                cont++;
+            }
+            
+            total = bbPrincipal.saldoTarjeta + ccMenuRecargaa.monto;
+            bbPrincipal.saldoTarjeta = total;
+            System.out.println("Monto Total >> " + total);
+            
+            if(cont==1){
+                String sql = "Update Tarjeta set "
+                        + "saldoTarjeta="+total+" "
+                        + "Where idTarjeta = " + aaLogearTarjeta.idTarjeta;
+                PreparedStatement pst = cn.prepareStatement(sql);
+                pst.executeUpdate();
+                
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "No existe Cliente");
+            }
+            
+            if(total>0){
+                bbPrincipal.panelAlquiler.setVisible(true);
+                bbPrincipal.panelDevolucion.setVisible(true);
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Error Logear Cliente -- " + ex);
+        }   
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -108,11 +157,11 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // TODO add your handling code here:
+        String contra = new String(txtContraTarjeta.getPassword());
         
-        
-        
+        confirmarTarjeta(contra);
         ccdOtroMontoRecarga.otroMonto = 0;
-        this.dispose();
+        ccMenuRecargaa.monto = 0;
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
 
@@ -122,4 +171,6 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField txtContraTarjeta;
     // End of variables declaration//GEN-END:variables
+Conexion.ConexionSQL cc = new ConexionSQL();
+Connection cn= ConexionSQL.conexionn();
 }

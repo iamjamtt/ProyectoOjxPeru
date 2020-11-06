@@ -5,7 +5,16 @@
  */
 package VistaCajero;
 
+import Conexion.ConexionSQL;
+import static VistaCajero.cdConfirmarRecargaa.total;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,11 +25,112 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
     /**
      * Creates new form ddfConfirmarAlquiler
      */
+    String codVP;
+    
+    
     public ddfConfirmarAlquiler() {
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
     }
 
+    void confirmarTarjeta(String contra){
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE t.contrasenia = '"+contra+"'" + " AND t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            int cont=0;
+            
+            if(rs.next()){
+                cont++;
+            }
+            
+            if(cont==1){
+                
+                
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Contraseña Incorrecta");
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Error Logear Cliente -- " + ex);
+        }   
+    }
+    
+    String codigosclientes(){
+     int j;
+        int cont=1;
+        String num="";
+        String c="";
+        String SQL="select max(codVP) from VoucherPedido";
+        
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs=st.executeQuery(SQL);
+            if(rs.next())
+            {              
+                 c=rs.getString(1);
+            }
+                    
+            if(c==null){
+                codVP = "VPP0001";
+            }
+            else{
+                char r1=c.charAt(2);
+                char r2=c.charAt(3);
+                char r3=c.charAt(4);
+                char r4=c.charAt(5);
+                String r="";
+                r=""+r1+r2+r3+r4;
+            
+                 j=Integer.parseInt(r);
+                 GenerarCodigos gen= new GenerarCodigos();
+                 gen.generar(j);
+                 codVP = "VPP"+gen.serie();            
+            }            
+         
+        } catch (SQLException ex) {
+            System.out.println("Error codigo VOUCHER voucher -- " + ex);
+        }
+        return codVP;
+    }
+    
+    void ingresarDatosDeRecarga(){
+        codVP = codigosclientes();
+        double impT = ddMenuAlquierr.precioTotal;
+        
+        String sql = "INSERT INTO VoucherTarjeta (codVP,fechaOperacionVP,idPedidoPelicula,importeTotal) VALUES (?,?,?,?)";
+            try {
+                PreparedStatement pst  = cn.prepareStatement(sql);
+                pst.setString(1, codVP);
+                
+                Date fechaActual = new Date();
+                int anioactual = fechaActual.getYear()+1900;
+                int mesactual = fechaActual.getMonth()+1;
+                int diaactual = fechaActual.getDate();
+
+                int hora = fechaActual.getHours();
+                int minuto = fechaActual.getMinutes();
+                int segundo = fechaActual.getSeconds();
+
+                String fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
+                
+                pst.setString(2, fecha);
+                pst.setInt(3, 1);
+                pst.setDouble(4, impT); 
+                
+                int n=pst.executeUpdate();
+                if(n>0){
+                JOptionPane.showMessageDialog(null, "Registro Guardado con Exito");
+                }
+
+            } catch (SQLException ex) {
+                System.out.println("Error al ingresar datos del VoucherTarjeta: " + ex);
+            }
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -102,8 +212,9 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // TODO add your handling code here:
-
-        this.dispose();
+        String contra = new String(txtContraTarjeta.getPassword());
+        
+        confirmarTarjeta(contra);
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
 
@@ -113,4 +224,6 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField txtContraTarjeta;
     // End of variables declaration//GEN-END:variables
+Conexion.ConexionSQL cc = new ConexionSQL();
+Connection cn= ConexionSQL.conexionn();
 }

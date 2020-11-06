@@ -328,16 +328,16 @@ public class ccMenuRecargaa extends javax.swing.JInternalFrame {
         });
 
         jLabel9.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        jLabel9.setText("Consultar Ultima Recarga");
+        jLabel9.setText("Consultar Saldo");
 
         javax.swing.GroupLayout panelConsultarUltimaRecargaLayout = new javax.swing.GroupLayout(panelConsultarUltimaRecarga);
         panelConsultarUltimaRecarga.setLayout(panelConsultarUltimaRecargaLayout);
         panelConsultarUltimaRecargaLayout.setHorizontalGroup(
             panelConsultarUltimaRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelConsultarUltimaRecargaLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+            .addGroup(panelConsultarUltimaRecargaLayout.createSequentialGroup()
+                .addGap(38, 38, 38)
                 .addComponent(jLabel9)
-                .addGap(19, 19, 19))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         panelConsultarUltimaRecargaLayout.setVerticalGroup(
             panelConsultarUltimaRecargaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

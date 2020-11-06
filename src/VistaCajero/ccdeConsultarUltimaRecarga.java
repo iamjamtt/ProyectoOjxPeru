@@ -29,6 +29,7 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
         this.getContentPane().setBackground(Color.WHITE);
         tablaUltimaRecarga.setBackground(Color.WHITE);
         cargar2();
+        cargarSaldoDisponible();
     }
     
     void cargar2(){
@@ -37,9 +38,11 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
         String []titulos={"NRO OPERACION","IMPORTE CARGADO","SALDO INICIAL","SALDO FINAL","FECHA DE OPERACION"};
         String []Registros=new String[5];
         model= new DefaultTableModel(null, titulos);
+        double saldoDisponible = 0;
         try {
               Statement st = cn.createStatement();
               ResultSet rs = st.executeQuery(mostrar);
+              
               while(rs.next())
               {
                   Registros[0]= rs.getString("nroOperacion");
@@ -50,10 +53,40 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
                   model.addRow(Registros);
               }
               tablaUltimaRecarga.setModel(model);
+              
+              if(rs.next()){
+                  saldoDisponible = rs.getDouble("saldoFinal");
+              }
+              
+              txtSaldoDisponible.setEditable(false);
+              txtSaldoDisponible.setText("S/. " + saldoDisponible);
+              
         } catch (SQLException ex) {
             System.out.println("Error en la tabla paciente: " + ex);
         }
     }
+    
+    void cargarSaldoDisponible(){
+        
+        String mostrar="SELECT * FROM VoucherTarjeta WHERE idVoucherPedido = (SELECT MAX(idVoucherPedido) FROM VoucherTarjeta WHERE idTarjeta="+aaLogearTarjeta.idTarjeta+")";
+        
+        double saldoDisponible = 0;
+        try {
+              Statement st = cn.createStatement();
+              ResultSet rs = st.executeQuery(mostrar);
+              
+              if(rs.next()){
+                  saldoDisponible = rs.getDouble("saldoFinal");
+              }
+              
+              txtSaldoDisponible.setEditable(false);
+              txtSaldoDisponible.setText("S/. " + saldoDisponible);
+              
+        } catch (SQLException ex) {
+            System.out.println("Error en cargar saldo disponible: " + ex);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -66,6 +99,8 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaUltimaRecarga = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        txtSaldoDisponible = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -74,6 +109,7 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
         setTitle("Consultar Ultima Recarga");
         setToolTipText("");
 
+        tablaUltimaRecarga.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
         tablaUltimaRecarga.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -87,20 +123,37 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(tablaUltimaRecarga);
 
+        jLabel1.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        jLabel1.setText("Saldo Disponible:");
+
+        txtSaldoDisponible.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        txtSaldoDisponible.setBorder(null);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSaldoDisponible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtSaldoDisponible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -109,8 +162,10 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaUltimaRecarga;
+    private javax.swing.JTextField txtSaldoDisponible;
     // End of variables declaration//GEN-END:variables
 Conexion.ConexionSQL cc = new ConexionSQL();
 Connection cn= ConexionSQL.conexionn();

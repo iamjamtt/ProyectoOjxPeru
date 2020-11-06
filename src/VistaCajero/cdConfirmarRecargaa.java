@@ -54,11 +54,6 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
                 cont++;
             }
             
-            total = bbPrincipal.saldoTarjeta + ccMenuRecargaa.monto;
-            saldoIniciall = bbPrincipal.saldoTarjeta;
-            bbPrincipal.saldoTarjeta = total;
-            System.out.println("Monto Total >> " + total);
-            
             if(cont==1){
                 String sql = "Update Tarjeta set "
                         + "saldoTarjeta="+total+" "
@@ -66,9 +61,20 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
                 PreparedStatement pst = cn.prepareStatement(sql);
                 pst.executeUpdate();
                 
+                total = bbPrincipal.saldoTarjeta + ccMenuRecargaa.monto;
+                saldoIniciall = bbPrincipal.saldoTarjeta;
+                bbPrincipal.saldoTarjeta = total;
+                System.out.println("Monto Total >> " + total);
+                
+                ingresarDatosDeRecarga();
+                total=0;
+                ccdOtroMontoRecarga.otroMonto = 0;
+                ccMenuRecargaa.monto = 0;
+                
                 this.dispose();
             }else{
-                JOptionPane.showMessageDialog(null, "No existe Cliente");
+                JOptionPane.showMessageDialog(null, "Contraseña Incorrecta");
+                txtContraTarjeta.setText("");
             }
             
             if(total>0){
@@ -246,9 +252,6 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
         String contra = new String(txtContraTarjeta.getPassword());
         
         confirmarTarjeta(contra);
-        ingresarDatosDeRecarga();
-        ccdOtroMontoRecarga.otroMonto = 0;
-        ccMenuRecargaa.monto = 0;
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
 

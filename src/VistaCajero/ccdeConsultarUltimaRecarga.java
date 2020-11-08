@@ -33,8 +33,7 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
     }
     
     void cargar2(){
-        
-        String mostrar="SELECT * FROM VoucherTarjeta WHERE idVoucherPedido = (SELECT MAX(idVoucherPedido) FROM VoucherTarjeta WHERE idTarjeta="+aaLogearTarjeta.idTarjeta+")";
+        String mostrar="SELECT * FROM VoucherTarjeta WHERE idVoucherTarjeta = (SELECT MAX(idVoucherTarjeta) FROM VoucherTarjeta WHERE idCliente="+bbPrincipal.idCliente+")";
         String []titulos={"NRO OPERACION","IMPORTE CARGADO","SALDO INICIAL","SALDO FINAL","FECHA DE OPERACION"};
         String []Registros=new String[5];
         model= new DefaultTableModel(null, titulos);
@@ -54,21 +53,14 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
               }
               tablaUltimaRecarga.setModel(model);
               
-              if(rs.next()){
-                  saldoDisponible = rs.getDouble("saldoFinal");
-              }
-              
-              txtSaldoDisponible.setEditable(false);
-              txtSaldoDisponible.setText("S/. " + saldoDisponible);
-              
         } catch (SQLException ex) {
-            System.out.println("Error en la tabla paciente: " + ex);
+            System.out.println("Error en la tabla ultimo saldo: " + ex);
         }
     }
     
     void cargarSaldoDisponible(){
         
-        String mostrar="SELECT * FROM VoucherTarjeta WHERE idVoucherPedido = (SELECT MAX(idVoucherPedido) FROM VoucherTarjeta WHERE idTarjeta="+aaLogearTarjeta.idTarjeta+")";
+        String mostrar="SELECT * FROM Tarjeta WHERE idTarjeta="+aaLogearTarjeta.idTarjeta;
         
         double saldoDisponible = 0;
         try {
@@ -76,7 +68,7 @@ public class ccdeConsultarUltimaRecarga extends javax.swing.JInternalFrame {
               ResultSet rs = st.executeQuery(mostrar);
               
               if(rs.next()){
-                  saldoDisponible = rs.getDouble("saldoFinal");
+                  saldoDisponible = rs.getDouble("saldoTarjeta");
               }
               
               txtSaldoDisponible.setEditable(false);

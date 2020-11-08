@@ -25,6 +25,7 @@ public class bbPrincipal extends javax.swing.JFrame {
      * Creates new form bbPrincipal
      */
     public static double saldoTarjeta;
+    public static int idCliente;
     
     public bbPrincipal() {
         initComponents();
@@ -36,13 +37,14 @@ public class bbPrincipal extends javax.swing.JFrame {
     }
     
     void mostrarNombre(){
-        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idTarjeta = t.idTarjeta WHERE t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
         String nombre="";
         try {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(mostrar);
             
             if(rs.next()){
+                idCliente = rs.getInt("idCliente");
                 nombre = rs.getString("nombre");
                 saldoTarjeta = rs.getDouble("saldoTarjeta");
             }
@@ -51,6 +53,7 @@ public class bbPrincipal extends javax.swing.JFrame {
             
             saldoTarjeta += cdConfirmarRecargaa.total;
             
+            System.out.println("idCliente >> " + idCliente);
             System.out.println("Nombre >> " + nombre);
             System.out.println("SaldoTarjeta >> " + saldoTarjeta);
          
@@ -70,6 +73,8 @@ public class bbPrincipal extends javax.swing.JFrame {
             panelDevolucion.setVisible(true);
         }
     }
+    
+    
     
     
     
@@ -173,6 +178,9 @@ public class bbPrincipal extends javax.swing.JFrame {
         panelAlquiler.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 panelAlquilerMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                panelAlquilerMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 panelAlquilerMouseExited(evt);
@@ -404,16 +412,55 @@ public class bbPrincipal extends javax.swing.JFrame {
 
     private void panelAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAlquilerMouseClicked
         // TODO add your handling code here:
-        ddMenuAlquierr menuAlquiler = new ddMenuAlquierr();
-        escritorio.add(menuAlquiler);
-        menuAlquiler.show();
+        int estadoT = 0;
+        String mostrar = "select * from Tarjeta WHERE idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            
+            if(rs.next()){
+                estadoT=rs.getInt("estadoTarjeta");
+            }
+            
+            if(estadoT==3){
+            JOptionPane.showMessageDialog(null, "Usted no puede realizar ningun alquiler.\n\nFalta devolver peliculas");
+            }else if(estadoT==1){
+                ddMenuAlquierr.con = 0;
+                ddMenuAlquierr.precioTotal = 0;
+                ddeAñadirAlquiler menuAlquiler = new ddeAñadirAlquiler();
+                escritorio.add(menuAlquiler);
+                menuAlquiler.show();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error estado tarjeta -- " + ex);
+        }   
+        
+        
     }//GEN-LAST:event_panelAlquilerMouseClicked
 
     private void panelDevolucionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelDevolucionMouseClicked
         // TODO add your handling code here:
-        eeMenuDevolucionn menuDevolucion = new eeMenuDevolucionn();
-        escritorio.add(menuDevolucion);
-        menuDevolucion.show();                       
+        int estadoT = 0;
+        String mostrar = "select * from Tarjeta WHERE idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            
+            if(rs.next()){
+                estadoT=rs.getInt("estadoTarjeta");
+            }
+            
+            if(estadoT==1 || estadoT==2){
+            JOptionPane.showMessageDialog(null, "Usted no cuenta con tramite de Devolucion pendinte");
+            }else if(estadoT==3){
+                eeMenuDevolucionn menuDevolucion = new eeMenuDevolucionn();
+                escritorio.add(menuDevolucion);
+                menuDevolucion.show(); 
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error estado tarjeta -- " + ex);
+        }   
+                              
     }//GEN-LAST:event_panelDevolucionMouseClicked
 
     private void panelSalirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSalirMouseExited
@@ -436,6 +483,10 @@ public class bbPrincipal extends javax.swing.JFrame {
         login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_panelSalirMouseClicked
+
+    private void panelAlquilerMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAlquilerMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_panelAlquilerMouseEntered
 
     /**
      * @param args the command line arguments

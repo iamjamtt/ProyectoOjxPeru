@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,60 +25,21 @@ public class ddeAñadirAlquiler extends javax.swing.JInternalFrame {
     /**
      * Creates new form ddeAñadirAlquiler
      */
-    DefaultTableModel model;
+    DefaultTableModel model = new DefaultTableModel();
     public static int cont2;
-    public static double PrecioP;
+    public static int idPP;
+    String codPP;
     
     
     public ddeAñadirAlquiler() {
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
         tablaPelicula.setBackground(Color.WHITE);
-        if(ddMenuAlquierr.con==3){
-            btnAniadir.setEnabled(false);
-        }
-        cargar2();
-    }
-    
-    void cargar2(){
-        String mostrar="SELECT * FROM PedidoPelicula p INNER JOIN Pelicula q ON p.idPelicula=q.idPelicula WHERE estadoPP ="+3;
-        String []titulos={"ID","PELICULA","PRECIO"};
-        String []Registros=new String[3];
-        model= new DefaultTableModel(null, titulos);
-        String apellido="";
-        try {
-              Statement st = cn.createStatement();
-              ResultSet rs = st.executeQuery(mostrar);
-              while(rs.next())
-              {
-                  Registros[0]= rs.getString("idPedidoPelicula");
-                  Registros[1]= rs.getString("nombreP");
-                  Registros[2]= rs.getString("costoP");
-                     
-                  model.addRow(Registros);
-              }
-              tablaPelicula.setModel(model);
-        } catch (SQLException ex) {
-            System.out.println("Error en la tabla paciente: " + ex);
-        }
-    }
-
-    void obtenerPrecio(){
-        String mostrar="SELECT * FROM PedidoPelicula p INNER JOIN Pelicula q ON p.idPelicula=q.idPelicula WHERE idPedidoPelicula = (SELECT MAX(idPedidoPelicula) FROM PedidoPelicula WHERE estadoPP="+1+")";
-        
-        try {
-                Statement st = cn.createStatement();
-                ResultSet rs = st.executeQuery(mostrar);
-                if(rs.next())
-                {
-                    PrecioP += rs.getDouble("costoP");
-                }
-                
-                System.out.println("Costo Pelicula >> " + PrecioP);
-              
-        } catch (SQLException ex) {
-            System.out.println("Error en obtener id pp: " + ex);
-        }
+        model.addColumn("ID");
+        model.addColumn("PELICULA");
+        model.addColumn("PRECIO");
+        model.addColumn("CANTIDAD");
+        tablaPelicula.setModel(model);
     }
     
     /**
@@ -98,7 +61,7 @@ public class ddeAñadirAlquiler extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Peliculas");
+        setTitle("Alquiler Peliculas");
 
         tablaPelicula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -183,7 +146,6 @@ public class ddeAñadirAlquiler extends javax.swing.JInternalFrame {
 
     private void btnAniadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAniadirActionPerformed
         // TODO add your handling code here:
-        this.dispose();
         ddMenuAlquierr menAlqui = new ddMenuAlquierr();
         bbPrincipal.escritorio.add(menAlqui);
         menAlqui.toFront();
@@ -192,41 +154,41 @@ public class ddeAñadirAlquiler extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        this.dispose();
-        ddfConfirmarAlquiler confirAlqui = new ddfConfirmarAlquiler();
-        bbPrincipal.escritorio.add(confirAlqui);
-        confirAlqui.toFront();
-        confirAlqui.setVisible(true);
+            this.dispose();
+            ddfConfirmarAlquiler confirAlqui = new ddfConfirmarAlquiler();
+            bbPrincipal.escritorio.add(confirAlqui);
+            confirAlqui.toFront();
+            confirAlqui.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        int nro=Integer.parseInt((String) tablaPelicula.getValueAt(tablaPelicula.getSelectedRow(),0));
-        try {
-                    
-                    String insertar = "UPDATE PedidoPelicula SET "
-                    +"estadoPP="+1+" "
-                    +"WHERE idPedidoPelicula='"+nro+"'";
-                    PreparedStatement pst = cn.prepareStatement(insertar);
-                    pst.executeUpdate();
-                    cargar2();
-                    obtenerPrecio();
-                    
-                    cont2++;
-                    btnAniadir.setEnabled(true);
-                    
-            } catch (Exception e) {
-                System.out.println("error al modificar los datos: "+e);
-            } 
+        DefaultTableModel modell = (DefaultTableModel) tablaPelicula.getModel();
+        int fila = tablaPelicula.getSelectedRow();
+        if(fila>=0)
+        {
+            modell.removeRow(fila);
+            ddMenuAlquierr.con-=1;
+            btnAniadir.setEnabled(true);
+            
+            double pre = Double.parseDouble(ddMenuAlquierr.prePe);
+            ddMenuAlquierr.precioTotal-=pre;
+            
+            System.out.println("conVuelta <-> " + ddMenuAlquierr.con + " || preTotalVuelta <-> " + ddMenuAlquierr.precioTotal);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Tabla vacia o no seleccione ninguna fila");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAniadir;
+    public static javax.swing.JButton btnAniadir;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaPelicula;
+    public static javax.swing.JTable tablaPelicula;
     // End of variables declaration//GEN-END:variables
 Conexion.ConexionSQL cc = new ConexionSQL();
 Connection cn= ConexionSQL.conexionn();

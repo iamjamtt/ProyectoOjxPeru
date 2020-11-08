@@ -6,14 +6,23 @@
 package VistaCajero;
 
 import Conexion.ConexionSQL;
-import static VistaCajero.cdConfirmarRecargaa.total;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,44 +34,21 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
     /**
      * Creates new form ddfConfirmarAlquiler
      */
-    String codVP;
+    String codPP, fecha, fechaM, horaM;
+    public static int idPPp;
     
     
     public ddfConfirmarAlquiler() {
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
     }
-
-    void confirmarTarjeta(String contra){
-        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE t.contrasenia = '"+contra+"'" + " AND t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
-        try {
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery(mostrar);
-            int cont=0;
-            
-            if(rs.next()){
-                cont++;
-            }
-            
-            if(cont==1){
-                
-                
-                this.dispose();
-            }else{
-                JOptionPane.showMessageDialog(null, "Contraseña Incorrecta");
-            }
-            
-        } catch (SQLException ex) {
-            System.out.println("Error Logear Cliente -- " + ex);
-        }   
-    }
     
-    String codigosclientes(){
-     int j;
+    String codigoPedidoPelicula(){
+        int j;
         int cont=1;
         String num="";
         String c="";
-        String SQL="select max(codVP) from VoucherPedido";
+        String SQL="select max(codigoVA) from VoucherAlquiler";
         
         try {
             Statement st = cn.createStatement();
@@ -73,7 +59,7 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
             }
                     
             if(c==null){
-                codVP = "VPP0001";
+                codPP = "CP0001";
             }
             else{
                 char r1=c.charAt(2);
@@ -84,25 +70,22 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
                 r=""+r1+r2+r3+r4;
             
                  j=Integer.parseInt(r);
-                 GenerarCodigos gen= new GenerarCodigos();
+                 GenerarCodigos2 gen= new GenerarCodigos2();
                  gen.generar(j);
-                 codVP = "VPP"+gen.serie();            
+                 codPP = "CP"+gen.serie();            
             }            
          
         } catch (SQLException ex) {
-            System.out.println("Error codigo VOUCHER voucher -- " + ex);
+            System.out.println("Error codigo PEDIDO PELICULA -- " + ex);
         }
-        return codVP;
+        return codPP;
     }
     
-    void ingresarDatosDeRecarga(){
-        codVP = codigosclientes();
-        double impT = ddMenuAlquierr.precioTotal;
-        
-        String sql = "INSERT INTO VoucherTarjeta (codVP,fechaOperacionVP,idPedidoPelicula,importeTotal) VALUES (?,?,?,?)";
+    void ingresarPedidoPelicula(){
+        codPP = codigoPedidoPelicula();
+        String sql="INSERT INTO VoucherAlquiler (fechaVA,estadoVA,importeTotal,codigoVA,idCliente) VALUES (?,?,?,?,?)";
             try {
                 PreparedStatement pst  = cn.prepareStatement(sql);
-                pst.setString(1, codVP);
                 
                 Date fechaActual = new Date();
                 int anioactual = fechaActual.getYear()+1900;
@@ -113,20 +96,215 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
                 int minuto = fechaActual.getMinutes();
                 int segundo = fechaActual.getSeconds();
 
-                String fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
+                fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
+                fechaM = diaactual+"/"+mesactual+"/"+anioactual;
+                horaM = hora+":"+minuto;
                 
-                pst.setString(2, fecha);
-                pst.setInt(3, 1);
-                pst.setDouble(4, impT); 
+                pst.setString(1, fecha);
+                pst.setInt(2, 1);
+                pst.setString(3, ""+ddMenuAlquierr.precioTotal);
+                pst.setString(4, codPP);
+                pst.setString(5, ""+bbPrincipal.idCliente);
                 
-                int n=pst.executeUpdate();
-                if(n>0){
-                JOptionPane.showMessageDialog(null, "Registro Guardado con Exito");
+
+                pst.executeUpdate();
+                
+            } catch (SQLException ex) {
+                System.out.println("Error al ingresar datos pedido Pelicula: " + ex);
+            }
+    }
+
+    int obtenerIdPP(){
+        String mostrar="SELECT * FROM VoucherAlquiler WHERE idVA = (SELECT MAX(idVA) FROM VoucherAlquiler WHERE estadoVA="+1+")";
+        
+        try {
+                Statement st = cn.createStatement();
+                ResultSet rs = st.executeQuery(mostrar);
+                if(rs.next())
+                {
+                    idPPp = rs.getInt("idVA");
                 }
+                
+                System.out.println("idPP >> " + idPPp);
+              
+        } catch (SQLException ex) {
+            System.out.println("Error en obtener id pp: " + ex);
+        }
+        return idPPp;
+    }
+    
+    void ingresarVoucherPedido(){
+        for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
+            String InsertarSQL="INSERT INTO DetalleVoucher(idVA,idPelicula,nombrePelicula,cantidadPelicula,precioPelicula) VALUES (?,?,?,?,?)";
+            int idVp=obtenerIdPP();
+            int idPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
+            String nombrePeli=ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 1).toString();
+            int cantPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
+            double precioPeli=Double.parseDouble(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 2).toString());
+
+            try {
+                PreparedStatement pst = cn.prepareStatement(InsertarSQL);
+                pst.setString(1,""+idVp);
+                pst.setString(2,""+idPeli);
+                pst.setString(3,nombrePeli);
+                pst.setString(4,""+cantPeli);
+                pst.setString(5,""+precioPeli);
+
+                pst.executeUpdate();
+
 
             } catch (SQLException ex) {
-                System.out.println("Error al ingresar datos del VoucherTarjeta: " + ex);
+                System.out.println("Error VOUCHER PEDIDO: " + ex);
             }
+        }
+    }
+    
+    double obtenerPrecioTarjeta(){
+        double SaldoTarjeta = 0;
+        String mostrar="SELECT * FROM Tarjeta WHERE idTarjeta="+aaLogearTarjeta.idTarjeta;
+        
+        try {
+                Statement st = cn.createStatement();
+                ResultSet rs = st.executeQuery(mostrar);
+                if(rs.next())
+                {
+                    SaldoTarjeta = rs.getDouble("saldoTarjeta");
+                }
+                
+                System.out.println("SaldoTarjeta para comparar >> >> " + SaldoTarjeta);
+              
+        } catch (SQLException ex) {
+            System.out.println("Error en obtener id pp: " + ex);
+        }
+        return SaldoTarjeta;
+    }
+    
+    void descontarSaldo(){
+        double saldoFinal;
+        double saldoTarjeta = obtenerPrecioTarjeta();
+        double saldoADescontar = ddMenuAlquierr.precioTotal;
+        
+        saldoFinal = saldoTarjeta - saldoADescontar;
+        
+        String modi="UPDATE Tarjeta SET saldoTarjeta="+saldoFinal+", estadoTarjeta="+3+" WHERE idTarjeta="+aaLogearTarjeta.idTarjeta;
+        try {
+            PreparedStatement pst = cn.prepareStatement(modi);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al descontar el saldo de la tarjeta: " + e);
+        }
+    }
+    
+    public void generarPDF(String codigo) throws FileNotFoundException, DocumentException{
+        FileOutputStream archivo = new FileOutputStream(codigo+".pdf");
+        Document documento = new Document();
+        PdfWriter.getInstance(documento, archivo);
+        documento.open();
+        
+        Paragraph parrafo = new Paragraph("Voucher de Alquiler");
+        parrafo.setAlignment(1);
+        documento.add(parrafo);
+        
+        documento.add(new Paragraph("\nCodigo de Voucher: " + codPP));
+        documento.add(new Paragraph("Fecha: " + fechaM + "          Hora: " + horaM));
+        documento.add(new Paragraph("\nCliente: " + aaLogearTarjeta.nombre + " " + aaLogearTarjeta.apellidoP + " " + aaLogearTarjeta.apellidoM));
+        documento.add(new Paragraph("DNI:   " + aaLogearTarjeta.dniii));
+        documento.add(new Paragraph("\nPeliculas Alquiladas"));
+        for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
+            int idPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
+            String nombrePeli=ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 1).toString();
+            int cantPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
+            double precioPeli=Double.parseDouble(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 2).toString());
+
+            documento.add(new Paragraph((i+1)+". " + nombrePeli + "      cant: " + cantPeli + "      precio: " + precioPeli));
+        }
+        documento.add(new Paragraph("\nPrecio Total: " + ddMenuAlquierr.precioTotal));
+        documento.close();
+    }
+    
+    public void abrirPDF(String codigo){
+        try {
+            File path = new File(codigo + ".pdf");
+            Desktop.getDesktop().open(path);
+        } catch (Exception e) {
+            System.out.println("Error al abrir el pdf " + e);
+        }
+    }
+    
+    void descontarstock(int codP,int can){
+        int des = can;
+        int cap = 0;
+        int desfinal;
+        String consul="SELECT * FROM Pelicula WHERE idPelicula="+codP;
+        try {
+            Statement st= cn.createStatement();
+            ResultSet rs= st.executeQuery(consul);
+            while(rs.next())
+            {
+                cap= rs.getInt("cantidadP");
+            }
+             
+        } catch (Exception e) {
+        }
+        desfinal=cap-des;
+        String modi="UPDATE Pelicula SET cantidadP="+desfinal+" WHERE idPelicula = "+codP;
+        try {
+            PreparedStatement pst = cn.prepareStatement(modi);
+            pst.executeUpdate();
+        } catch (Exception e) {
+        }
+    }
+
+    void confirmarTarjeta(String contra){
+        double saldoTarjeta = obtenerPrecioTarjeta();
+        
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idTarjeta = t.idTarjeta WHERE t.contrasenia = '"+contra+"'" + " AND t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            int cont=0;
+            
+            if(rs.next()){
+                cont++;
+            }
+            
+            if(cont==1){
+                if(saldoTarjeta>=ddMenuAlquierr.precioTotal){
+                ingresarPedidoPelicula();
+                ingresarVoucherPedido();
+                descontarSaldo();
+                
+                int capcod,capcan;
+                for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++)
+                {
+                    capcod=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
+                    capcan=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
+                    descontarstock(capcod, capcan);
+                }
+                    try {
+                        generarPDF(codPP);
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (DocumentException ex) {
+                        Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                }else{
+                    JOptionPane.showMessageDialog(null, "Usted no cuenta con saldo suficiente para realizar el alquiler");
+                }
+                
+                JOptionPane.showMessageDialog(null, "Tramite de Alquiler con exito","Mensaje",1);
+                
+                abrirPDF(codPP);
+                
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Contraseña Incorrecta");
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Error Logear Cliente -- " + ex);
+        }   
     }
     
     

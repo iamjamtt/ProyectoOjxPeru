@@ -6,41 +6,116 @@
 package VistaCajero;
 
 import Conexion.ConexionSQL;
-import static VistaCajero.aaLogearTarjeta.idTarjeta;
-import static VistaCajero.bbPrincipal.saldoTarjeta;
-import com.placeholder.PlaceHolder;
+import static VistaCajero.cdConfirmarRecargaa.total;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author jamt_
  */
-public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
+public class efConfirmarDevolucionn extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form cdConfirmarRecargaa
+     * Creates new form efConfirmarDevolucionn
      */
-    PlaceHolder holder;
-    public static double total;
-    String nroOpeacion;
-    double saldoIniciall;
-    
-    
-    public cdConfirmarRecargaa() {
+    public efConfirmarDevolucionn() {
         initComponents();
-        this.getContentPane().setBackground(Color.WHITE);
-        holder = new PlaceHolder(txtContraTarjeta, "Contraseña");
         
+        this.getContentPane().setBackground(Color.WHITE);
+    }
+    
+    void estadoTarjeta(){
+        String modi="UPDATE Tarjeta SET estadoTarjeta="+1+" WHERE idTarjeta="+aaLogearTarjeta.idTarjeta;
+        try {
+            PreparedStatement pst = cn.prepareStatement(modi);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al descontar el saldo de la tarjeta: " + e);
+        }
+    }
+    
+    void ingresarFechaDevolucion(){
+        String fecha;
+        
+        Date fechaActual = new Date();
+        int anioactual = fechaActual.getYear()+1900;
+        int mesactual = fechaActual.getMonth()+1;
+        int diaactual = fechaActual.getDate();
+
+        fecha = anioactual+"-"+mesactual+"-"+diaactual;
+                
+        String modi="UPDATE VoucherAlquiler SET fechaDevolucion='"+fecha+"', estadoVA="+2+" WHERE codigoVA='"+eeMenuDevolucionn.codVA+"'";
+        try {
+            PreparedStatement pst = cn.prepareStatement(modi);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al descontar el saldo de la tarjetaaaaa: " + e);
+        }
+    }
+
+    void restaurarStock(int codP){
+        int cap = 0;
+        int desfinal;
+        String consul="SELECT * FROM Pelicula WHERE idPelicula="+codP;
+        try {
+            Statement st= cn.createStatement();
+            ResultSet rs= st.executeQuery(consul);
+            while(rs.next())
+            {
+                cap= rs.getInt("cantidadP");
+            }
+             
+        } catch (Exception e) {
+        }
+        desfinal=cap+1;
+        String modi="UPDATE Pelicula SET cantidadP="+desfinal+" WHERE idPelicula = "+codP;
+        try {
+            PreparedStatement pst = cn.prepareStatement(modi);
+            pst.executeUpdate();
+        } catch (Exception e) {
+        }
+    }
+    
+    int obtenerIdVA(){
+        int idVAA = 0;
+        String consul="SELECT * FROM VoucherAlquiler WHERE codigoVA='"+eeMenuDevolucionn.codVA+"'";
+        try {
+            Statement st= cn.createStatement();
+            ResultSet rs= st.executeQuery(consul);
+            while(rs.next())
+            {
+                idVAA= rs.getInt("idVA");
+            }
+            System.out.println("idVA: " + idVAA);
+        } catch (Exception e) {
+            System.out.println("Error obtener idVA: " + e);
+        }
+        return idVAA;
+    }
+    
+    int contadorDeFlias(){
+        int idVA = obtenerIdVA();
+        int contador = 0;
+        String consul="SELECT count(*) AS total FROM DetalleVoucher WHERE idVA="+idVA;
+        try {
+            Statement st= cn.createStatement();
+            ResultSet rs= st.executeQuery(consul);
+            if(rs.next())
+            {
+                contador = rs.getInt("total");
+            }
+            System.out.println("contador: " + contador);
+        } catch (Exception e) {
+            System.out.println("Error obtener idVA: " + e);
+        }
+        return contador;
     }
     
     void confirmarTarjeta(String contra){
@@ -50,126 +125,46 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(mostrar);
             
-            
             if(rs.next()){
                 cont++;
             }
             
-            total = bbPrincipal.saldoTarjeta + ccMenuRecargaa.monto;
-            
             if(cont==1){
-                String sql = "Update Tarjeta set "
-                        + "saldoTarjeta="+total+" "
-                        + "Where idTarjeta = " + aaLogearTarjeta.idTarjeta;
-                PreparedStatement pst = cn.prepareStatement(sql);
-                pst.executeUpdate();
+                estadoTarjeta();
+                ingresarFechaDevolucion();
+                int capcod;
+                int idVA = obtenerIdVA();
+                int contador = contadorDeFlias();
+                String mo = "SELECT * FROM DetalleVoucher where idVA="+idVA;
+                try {
+                    Statement stt = cn.createStatement();
+                    ResultSet rss = stt.executeQuery(mo);
+                    
+                    for(int i=0;i<contador;i++)
+                    {
+                        if(rss.next()){
+                        capcod=rss.getInt("idPelicula");
+                        restaurarStock(capcod); 
+                        }
+                    }
+                    
+                } catch (Exception e) {
+                    System.out.println("Error al restaurar stok: " + e);
+                }
                 
+                JOptionPane.showMessageDialog(null, "Tramite de devolucion con exito","Mensaje",1);
                 
-                saldoIniciall = bbPrincipal.saldoTarjeta;
-                bbPrincipal.saldoTarjeta = total;
-                System.out.println("Monto Total >> " + total);
-                
-                ingresarDatosDeRecarga();
-                
-                JOptionPane.showMessageDialog(null, "Recarga realizada con exito\n\nSaldo disponible: S/."+total+"0");
-                
-                ccdOtroMontoRecarga.otroMonto = 0;
-                ccMenuRecargaa.monto = 0;
-                
-                bbPrincipal.panelAlquiler.setVisible(true);
-                bbPrincipal.panelDevolucion.setVisible(true);
-               
                 this.dispose();
             }else{
                 JOptionPane.showMessageDialog(null, "Contraseña Incorrecta");
                 txtContraTarjeta.setText("");
             }
-            
-            total=0;
                         
         } catch (SQLException ex) {
             System.out.println("Error Logear Cliente -- " + ex);
         }   
     }
     
-    String codigosclientes(){
-     int j;
-        int cont=1;
-        String num="";
-        String c="";
-        String SQL="select max(nroOperacion) from VoucherTarjeta";
-        
-       // String SQL="select count(*) from factura";
-        //String SQL="SELECT MAX(cod_emp) AS cod_emp FROM empleado";
-        //String SQL="SELECT @@identity AS ID";
-        try {
-            Statement st = cn.createStatement();
-            ResultSet rs=st.executeQuery(SQL);
-            if(rs.next())
-            {              
-                 c=rs.getString(1);
-            }
-                    
-            if(c==null){
-                nroOpeacion = "RR0001";
-            }
-            else{
-                char r1=c.charAt(2);
-                char r2=c.charAt(3);
-                char r3=c.charAt(4);
-                char r4=c.charAt(5);
-                String r="";
-                r=""+r1+r2+r3+r4;
-            
-                 j=Integer.parseInt(r);
-                 GenerarCodigos gen= new GenerarCodigos();
-                 gen.generar(j);
-                 nroOpeacion = "RR"+gen.serie();            
-            }            
-         
-        } catch (SQLException ex) {
-            System.out.println("Error codigo recarga voucher -- " + ex);
-        }
-        return nroOpeacion;
-    }
-    
-    void ingresarDatosDeRecarga(){
-        double importeCargado = ccMenuRecargaa.monto;
-        double saldoFinal = total;
-        double saldoInicial = saldoIniciall;
-        nroOpeacion = codigosclientes();
-        int idCliente = bbPrincipal.idCliente;
-        
-        String sql = "INSERT INTO VoucherTarjeta (nroOperacion,importeCargado,saldoInicial,saldoFinal,fechaOperacion,idCliente) VALUES (?,?,?,?,?,?)";
-            try {
-                PreparedStatement pst  = cn.prepareStatement(sql);
-                pst.setString(1, nroOpeacion);
-                pst.setDouble(2, importeCargado);
-                pst.setDouble(3, saldoInicial);
-                pst.setDouble(4, saldoFinal);
-
-                Date fechaActual = new Date();
-                int anioactual = fechaActual.getYear()+1900;
-                int mesactual = fechaActual.getMonth()+1;
-                int diaactual = fechaActual.getDate();
-
-                int hora = fechaActual.getHours();
-                int minuto = fechaActual.getMinutes();
-                int segundo = fechaActual.getSeconds();
-
-                String fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
-
-                pst.setString(5, fecha);
-                pst.setInt(6, idCliente);  
-                
-                pst.executeUpdate();
-
-            } catch (SQLException ex) {
-                System.out.println("Error al ingresar datos del VoucherTarjeta: " + ex);
-            }
-    }
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -188,7 +183,7 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Confirmar Recarga");
+        setTitle("Confirmar Devolucion");
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -252,7 +247,7 @@ public class cdConfirmarRecargaa extends javax.swing.JInternalFrame {
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // TODO add your handling code here:
         String contra = new String(txtContraTarjeta.getPassword());
-        
+
         confirmarTarjeta(contra);
     }//GEN-LAST:event_btnConfirmarActionPerformed
 

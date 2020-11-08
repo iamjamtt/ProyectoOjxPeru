@@ -40,6 +40,7 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
     public static double precioPelicula;
     public static double precioTotal;
     public static int con;
+    public static String prePe;
     
     
     public ddMenuAlquierr(){
@@ -70,10 +71,10 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
     
     void cargarPelicula(String valor){
         
-        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%'";
+        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%' AND "+" cantidadP>"+0;
         
-        String []titulos={"NRO","CARATULA","NOMBRE","PRECIO"};
-        Object []Registros=new Object[4];
+        String []titulos={"NRO","CARATULA","NOMBRE","PRECIO","STOCK"};
+        Object []Registros=new Object[5];
         model= new DefaultTableModel(null, titulos);
         
         try {
@@ -99,6 +100,8 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
                     Registros[1]= new JLabel(new ImageIcon(img));
                     Registros[2]= rs.getString(2);
                     Registros[3]= rs.getString(3);
+                    Registros[4]= rs.getString(5);
+                    
                     model.addRow(Registros); 
                 }
                 tablaPelicula.setModel(model);
@@ -111,10 +114,10 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
   
     void cargarPeliculaCategoria(String valor){
         idCategoria = cboCategoriaPelicula.getSelectedIndex();
-        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%' AND idCategoria="+idCategoria;
+        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%' AND idCategoria="+idCategoria+" AND "+" cantidadP>"+0;
         
-        String []titulos={"NRO","CARATULA","NOMBRE","PRECIO"};
-        Object []Registros=new Object[4];
+        String []titulos={"NRO","CARATULA","NOMBRE","PRECIO","STOCK"};
+        Object []Registros=new Object[5];
         model= new DefaultTableModel(null, titulos);
         
         try {
@@ -140,6 +143,7 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
                     Registros[1]= new JLabel(new ImageIcon(img));
                     Registros[2]= rs.getString(2);
                     Registros[3]= rs.getString(3);
+                    Registros[4]= rs.getString(5);
                     model.addRow(Registros); 
                 }
                 tablaPelicula.setModel(model);
@@ -149,91 +153,6 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
         }
     }
     
-    void obtenerIdPelicula(){
-        int nro=Integer.parseInt((String) tablaPelicula.getValueAt(tablaPelicula.getSelectedRow(),0));
-            try {
-                String ConsultaSQL="SELECT * FROM Pelicula WHERE idPelicula="+nro;
-
-                Statement st = cn.createStatement();
-                ResultSet rs = st.executeQuery(ConsultaSQL);                    
-
-                if(rs.next()){
-                    idPelicula = rs.getInt("idPelicula");
-                } 
-                
-                System.out.println("" + idPelicula);
-                
-            } catch (Exception e) {
-                System.out.println("ERROR seleccionar datos: "+e.getMessage());
-            }
-    }
-    
-    void obtenerPrecioPelicula(){
-        try {
-                String ConsultaSQL="SELECT * FROM Pelicula WHERE idPelicula="+idPelicula;
-
-                Statement st = cn.createStatement();
-                ResultSet rs = st.executeQuery(ConsultaSQL);                    
-
-                if(rs.next()){
-                    precioPelicula += rs.getDouble("costoP");
-                }
-                
-                precioPelicula = precioPelicula - ddeAñadirAlquiler.PrecioP;
-                
-                ddeAñadirAlquiler.PrecioP = 0;
-                
-                precioTotal = precioPelicula;
-                
-                System.out.println("CostoP" + precioPelicula);
-                
-            } catch (Exception e) {
-                System.out.println("ERROR obtener precio: "+e.getMessage());
-            }
-    }
-    
-    void ingresarPedidoPelicula(){
-        String sql="INSERT INTO PedidoPelicula (fechaPP,fechaDevolucion,idPelicula,idTarjeta,estadoPP) VALUES (?,?,?,?,?)";
-            try {
-                PreparedStatement pst  = cn.prepareStatement(sql);
-                
-                Date fechaActual = new Date();
-                int anioactual = fechaActual.getYear()+1900;
-                int mesactual = fechaActual.getMonth()+1;
-                int diaactual = fechaActual.getDate();
-                int diaactual2 = fechaActual.getDate()+10;
-
-                int hora = fechaActual.getHours();
-                int minuto = fechaActual.getMinutes();
-                int segundo = fechaActual.getSeconds();
-
-                String fecha = anioactual+"-"+mesactual+"-"+diaactual+" "+hora+":"+minuto+":"+segundo;
-                String fecha2 = anioactual+"-"+mesactual+"-"+diaactual2+" "+hora+":"+minuto+":"+segundo;
-                
-                pst.setString(1, fecha);
-                pst.setString(2, fecha2);
-                pst.setString(3, ""+idPelicula);
-                pst.setString(4, ""+aaLogearTarjeta.idTarjeta);
-                pst.setInt(5, 3);
-                
-
-                int n=pst.executeUpdate();
-                if(n>0){
-                    JOptionPane.showMessageDialog(null, "Registro Guardado con Exito");
-                }
-                
-                con++;
-                con = con - ddeAñadirAlquiler.cont2;
-                ddeAñadirAlquiler.cont2 = 0;
-                
-                System.out.println("Cont >>->> " + con);
-                
-            } catch (SQLException ex) {
-                System.out.println("Error al ingresar datos: " + ex);
-            }
-    }
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -254,7 +173,7 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Alquiler Pelicula");
+        setTitle("Peliculas");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 153));
 
@@ -362,14 +281,63 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
     private void tablaPeliculaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaPeliculaMouseClicked
         // TODO add your handling code here:
         if(evt.getClickCount()==2){
-            obtenerIdPelicula();
-            ingresarPedidoPelicula();
-            obtenerPrecioPelicula();
-            ddeAñadirAlquiler añaAlqui = new ddeAñadirAlquiler();
-            bbPrincipal.escritorio.add(añaAlqui);
-            añaAlqui.toFront();
-            añaAlqui.setVisible(true);
-            this.dispose();
+            try {
+                DefaultTableModel tabladet = (DefaultTableModel) ddeAñadirAlquiler.tablaPelicula.getModel();
+                String[]  dato=new String[4];
+
+                int  fila = tablaPelicula.getSelectedRow();
+
+                if(fila==-1){
+                    JOptionPane.showMessageDialog(null, "No  ha seleccionado ningun registro");
+                }
+                else{
+                    String codPe=tablaPelicula.getValueAt(fila, 0).toString();
+                    String nomPe=tablaPelicula.getValueAt(fila, 2).toString();
+                    prePe=tablaPelicula.getValueAt(fila, 3).toString();
+                    System.out.println("cod Pe " + codPe);
+                    int c=0;
+                    int j=0;
+                    int cantPe=1;
+                    double pre = Double.parseDouble(prePe);
+                
+                    for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
+                            Object com=ddeAñadirAlquiler.tablaPelicula.getValueAt(i,0);
+                            if(codPe.equals(com)){
+                            j=i;
+                            JOptionPane.showMessageDialog(null, "Pelicula ya ingresada");
+                            c=c+1;
+                        }
+                    }
+
+                    if(c==0){
+                        dato[0]=codPe;
+                        dato[1]=nomPe;
+                        dato[2]=prePe;
+                        dato[3]=String.valueOf(cantPe);
+                        
+                        con++;
+                        precioTotal += pre;
+                        System.out.println("con <-> " + con + " || preTotal <-> " + precioTotal);
+                        
+                        if(con==3){
+                            ddeAñadirAlquiler.btnAniadir.setEnabled(false);
+                        }
+                        
+                        tabladet.addRow(dato);
+
+                        ddeAñadirAlquiler.tablaPelicula.setModel(tabladet);
+                        
+                        this.dispose();
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error agregar peliculas a la otra tabla " + e);
+            }
+            
+            //ddeAñadirAlquiler añaAlqui = new ddeAñadirAlquiler();
+            //bbPrincipal.escritorio.add(añaAlqui);
+            //añaAlqui.toFront();
+            //añaAlqui.setVisible(true);
         }
     }//GEN-LAST:event_tablaPeliculaMouseClicked
 
@@ -385,6 +353,7 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
     private void txtBuscarPeliculaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPeliculaKeyTyped
         // TODO add your handling code here:
         cargarPeliculaCategoria(txtBuscarPelicula.getText());
+        cargarPelicula(txtBuscarPelicula.getText());
     }//GEN-LAST:event_txtBuscarPeliculaKeyTyped
 
 

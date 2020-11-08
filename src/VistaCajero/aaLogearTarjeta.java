@@ -27,6 +27,7 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
      */
     PlaceHolder holder;
     public static int idTarjeta;
+    public static String nombre, apellidoP, apellidoM, dniii;
     
     
     public aaLogearTarjeta() {
@@ -38,7 +39,7 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
     }
     
     void verificar(String codigo, String dni){
-        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idCliente = t.idCliente WHERE c.dni = '"+dni+"' AND t.codigoTarjeta = '"+codigo+"'";
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idTarjeta = t.idTarjeta WHERE c.dni = '"+dni+"' AND t.codigoTarjeta = '"+codigo+"'";
         try {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(mostrar);
@@ -51,6 +52,7 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
             System.out.println("idTarjeta >> " + idTarjeta);
             
             if(cont==1){
+                obtenerDatosCliente();
                 bbPrincipal principal = new bbPrincipal();
                 principal.setVisible(true);
                 this.dispose();
@@ -60,6 +62,26 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
             
         } catch (SQLException ex) {
             System.out.println("Error Logear Cliente -- " + ex);
+        }   
+    }
+    
+    void obtenerDatosCliente(){
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idTarjeta = t.idTarjeta WHERE t.idTarjeta="+idTarjeta;
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            
+            if(rs.next()){
+                nombre= rs.getString("nombre");
+                apellidoP= rs.getString("apellidoP");
+                apellidoM= rs.getString("apellidoM");
+                dniii= rs.getString("dni");
+            }
+            
+            System.out.println("nombre >> " + nombre + " " + apellidoP +  " " + apellidoM +  " " + dniii);
+     
+        } catch (SQLException ex) {
+            System.out.println("Error obetener datos clientes -- " + ex);
         }   
     }
     

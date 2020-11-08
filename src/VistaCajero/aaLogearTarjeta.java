@@ -25,7 +25,6 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
     /**
      * Creates new form aaLogearTarjeta
      */
-    PlaceHolder holder;
     public static int idTarjeta;
     public static String nombre, apellidoP, apellidoM, dniii;
     
@@ -34,8 +33,6 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-        holder = new PlaceHolder(txtNroTarjeta, "Nro Tarjeta");
-        holder = new PlaceHolder(txtDNI, "Dni");
     }
     
     void verificar(String codigo, String dni){
@@ -103,9 +100,9 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtNroTarjeta = new javax.swing.JTextField();
-        txtDNI = new javax.swing.JTextField();
-        btnIniciarSesion = new javax.swing.JButton();
+        txtNroTarjeta1 = new LIB.FSTexFieldMD();
+        txtDni1 = new LIB.FSTexFieldMD();
+        btnIniciarSesion = new LIB.FSButtonMD();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -131,15 +128,27 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        txtNroTarjeta.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        txtNroTarjeta.setToolTipText("");
+        txtNroTarjeta1.setForeground(new java.awt.Color(51, 51, 51));
+        txtNroTarjeta1.setBordeColorFocus(new java.awt.Color(102, 255, 102));
+        txtNroTarjeta1.setFont(new java.awt.Font("Roboto Bold", 1, 12)); // NOI18N
+        txtNroTarjeta1.setPlaceholder("Nro Tarjeta \"1010-1010-1010-1010\"");
+        txtNroTarjeta1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtNroTarjeta1MouseClicked(evt);
+            }
+        });
 
-        txtDNI.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        txtDni1.setForeground(new java.awt.Color(51, 51, 51));
+        txtDni1.setBordeColorFocus(new java.awt.Color(102, 255, 102));
+        txtDni1.setFont(new java.awt.Font("Roboto Bold", 1, 12)); // NOI18N
+        txtDni1.setPlaceholder("Dni");
 
         btnIniciarSesion.setBackground(new java.awt.Color(51, 255, 51));
-        btnIniciarSesion.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         btnIniciarSesion.setText("Iniciar Sesión");
-        btnIniciarSesion.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        btnIniciarSesion.setColorHover(new java.awt.Color(153, 255, 153));
+        btnIniciarSesion.setColorNormal(new java.awt.Color(51, 255, 51));
+        btnIniciarSesion.setColorTextNormal(new java.awt.Color(0, 0, 0));
+        btnIniciarSesion.setFont(new java.awt.Font("Segoe", 1, 18)); // NOI18N
         btnIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIniciarSesionActionPerformed(evt);
@@ -151,14 +160,14 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(17, 17, 17))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNroTarjeta)
-                    .addComponent(txtDNI)
+                    .addComponent(txtDni1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(txtNroTarjeta1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnIniciarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -167,13 +176,13 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jLabel2)
-                .addGap(43, 43, 43)
-                .addComponent(txtNroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
-                .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(224, Short.MAX_VALUE))
+                .addGap(38, 38, 38)
+                .addComponent(txtNroTarjeta1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtDni1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71)
+                .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(201, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -186,11 +195,11 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 198, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,10 +223,15 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void txtNroTarjeta1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNroTarjeta1MouseClicked
+        // TODO add your handling code here:
+        txtNroTarjeta1.setText("1010-1010-1010-");
+    }//GEN-LAST:event_txtNroTarjeta1MouseClicked
+
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         // TODO add your handling code here:
-        String codigo = txtNroTarjeta.getText();
-        String dni = txtDNI.getText();
+        String codigo = txtNroTarjeta1.getText();
+        String dni = txtDni1.getText();
         
         verificar(codigo, dni);
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
@@ -258,13 +272,13 @@ public class aaLogearTarjeta extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnIniciarSesion;
+    private LIB.FSButtonMD btnIniciarSesion;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtDNI;
-    private javax.swing.JTextField txtNroTarjeta;
+    private LIB.FSTexFieldMD txtDni1;
+    private LIB.FSTexFieldMD txtNroTarjeta1;
     // End of variables declaration//GEN-END:variables
 Conexion.ConexionSQL cc = new ConexionSQL();
 Connection cn= ConexionSQL.conexionn();

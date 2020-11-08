@@ -94,6 +94,7 @@ public class eeMenuDevolucionn extends javax.swing.JInternalFrame {
 
         txtCodVA.setFont(new java.awt.Font("Yu Gothic UI", 0, 14)); // NOI18N
 
+        btnSiguiente.setBackground(new java.awt.Color(51, 255, 51));
         btnSiguiente.setFont(new java.awt.Font("Yu Gothic UI", 0, 14)); // NOI18N
         btnSiguiente.setText("Siguiente");
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {

@@ -103,7 +103,7 @@ public class bbPrincipal extends javax.swing.JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.ORANGE);
+                g.setColor(Color.WHITE);
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
         };
@@ -125,7 +125,7 @@ public class bbPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel2.setBackground(new java.awt.Color(204, 255, 102));
         jPanel2.setMaximumSize(new java.awt.Dimension(224, 510));
         jPanel2.setMinimumSize(new java.awt.Dimension(224, 510));
 
@@ -314,6 +314,7 @@ public class bbPrincipal extends javax.swing.JFrame {
         );
 
         escritorio.setBackground(new java.awt.Color(242, 242, 242));
+        escritorio.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 255, 102), new java.awt.Color(204, 204, 204)));
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
         escritorio.setLayout(escritorioLayout);

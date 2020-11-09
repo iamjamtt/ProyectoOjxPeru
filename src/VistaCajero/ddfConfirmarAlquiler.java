@@ -206,33 +206,6 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
         }
     }
     
-    public void generarPDF(String codigo) throws FileNotFoundException, DocumentException{
-        FileOutputStream archivo = new FileOutputStream(codigo+".pdf");
-        Document documento = new Document();
-        PdfWriter.getInstance(documento, archivo);
-        documento.open();
-        
-        Paragraph parrafo = new Paragraph("Voucher de Alquiler");
-        parrafo.setAlignment(1);
-        documento.add(parrafo);
-        
-        documento.add(new Paragraph("\nCodigo de Voucher: " + codPP));
-        documento.add(new Paragraph("Fecha: " + fechaM + "          Hora: " + horaM));
-        documento.add(new Paragraph("\nCliente: " + aaLogearTarjeta.nombre + " " + aaLogearTarjeta.apellidoP + " " + aaLogearTarjeta.apellidoM));
-        documento.add(new Paragraph("DNI:       " + aaLogearTarjeta.dniii));
-        documento.add(new Paragraph("\nPeliculas Alquiladas"));
-        for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
-            int idPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
-            String nombrePeli=ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 1).toString();
-            int cantPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
-            double precioPeli=Double.parseDouble(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 2).toString());
-
-            documento.add(new Paragraph((i+1)+". " + nombrePeli + "      cant: " + cantPeli + "      precio: " + precioPeli));
-        }
-        documento.add(new Paragraph("\nPrecio Total: " + ddMenuAlquierr.precioTotal));
-        documento.close();
-    }
-    
     public static void pdf(String codigo) throws FileNotFoundException, DocumentException{
         FileOutputStream archivo = new FileOutputStream(codigo+".pdf");
         Document documento = new Document();
@@ -341,7 +314,13 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
             
             documento.add(tablaP);
             
-            documento.add(new Paragraph("\nImporte Total: " + ddMenuAlquierr.precioTotal, negrita3));
+            Paragraph preFinal = new Paragraph("\nImporte Total: S/." + ddMenuAlquierr.precioTotal, negrita3);
+            preFinal.setAlignment(Element.ALIGN_RIGHT);
+            documento.add(preFinal);
+            
+            Paragraph finall = new Paragraph("\n\n\n\nGracias por su Compra", negrita3);
+            finall.setAlignment(Element.ALIGN_CENTER);
+            documento.add(finall);
             
         } catch (BadElementException ex) {
             Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);

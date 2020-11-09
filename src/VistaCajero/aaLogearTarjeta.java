@@ -6,8 +6,10 @@
 package VistaCajero;
 
 import Conexion.ConexionSQL;
+import com.itextpdf.text.DocumentException;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

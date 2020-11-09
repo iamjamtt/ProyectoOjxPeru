@@ -6,15 +6,25 @@
 package VistaCajero;
 
 import Conexion.ConexionSQL;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,6 +51,7 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
     public ddfConfirmarAlquiler() {
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
+        
     }
     
     String codigoPedidoPelicula(){
@@ -208,7 +219,7 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
         documento.add(new Paragraph("\nCodigo de Voucher: " + codPP));
         documento.add(new Paragraph("Fecha: " + fechaM + "          Hora: " + horaM));
         documento.add(new Paragraph("\nCliente: " + aaLogearTarjeta.nombre + " " + aaLogearTarjeta.apellidoP + " " + aaLogearTarjeta.apellidoM));
-        documento.add(new Paragraph("DNI:   " + aaLogearTarjeta.dniii));
+        documento.add(new Paragraph("DNI:       " + aaLogearTarjeta.dniii));
         documento.add(new Paragraph("\nPeliculas Alquiladas"));
         for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
             int idPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
@@ -220,6 +231,125 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
         }
         documento.add(new Paragraph("\nPrecio Total: " + ddMenuAlquierr.precioTotal));
         documento.close();
+    }
+    
+    public static void pdf(String codigo) throws FileNotFoundException, DocumentException{
+        FileOutputStream archivo = new FileOutputStream(codigo+".pdf");
+        Document documento = new Document();
+        PdfWriter.getInstance(documento, archivo);
+        documento.open();
+                
+        try {
+            Image logo = Image.getInstance("src/Imagenes/logo.png");
+        
+            Font negrita = new Font(Font.FontFamily.HELVETICA,12,Font.BOLD,BaseColor.WHITE);
+            Font negrita3 = new Font(Font.FontFamily.HELVETICA,12,Font.BOLD,BaseColor.BLACK);
+            Font negrita2 = new Font(Font.FontFamily.HELVETICA,18,Font.BOLD,BaseColor.BLACK);
+            Font negrita4 = new Font(Font.FontFamily.HELVETICA,14,Font.BOLD,BaseColor.BLACK);
+
+            Paragraph parrafo = new Paragraph("OjxPeru",negrita4);
+            PdfPTable enca = new PdfPTable(4);
+            enca.setWidthPercentage(100);
+            enca.getDefaultCell().setBorder(0);
+            float[] clumn = new float[]{20f, 30f, 70f, 40f};
+            enca.setWidths(clumn);
+            enca.setHorizontalAlignment(Element.ALIGN_LEFT);
+
+            enca.addCell("");
+            enca.addCell("");
+            enca.addCell(parrafo);enca.addCell("");
+            documento.add(enca);
+            
+            Date fechaActual = new Date();
+                int anioactual = fechaActual.getYear()+1900;
+                int mesactual = fechaActual.getMonth()+1;
+                int diaactual = fechaActual.getDate();
+
+                int hora = fechaActual.getHours();
+                int minuto = fechaActual.getMinutes();
+                int segundo = fechaActual.getSeconds();
+                
+                String fechita=diaactual+"/"+mesactual+"/"+anioactual;
+                String horitas=hora+":"+minuto;
+            
+            Paragraph fechaaa = new Paragraph();
+            fechaaa.add("Codigo:    " + codigo + "\n Fecha:     " + fechita + "\n   Hora:     " + horitas);
+            PdfPTable encabezado = new PdfPTable(4);
+            encabezado.setWidthPercentage(100);
+            encabezado.getDefaultCell().setBorder(0);
+            float[] clumnasEncabezado = new float[]{20f, 30f, 70f, 40f};
+            encabezado.setWidths(clumnasEncabezado);
+            encabezado.setHorizontalAlignment(Element.ALIGN_LEFT);
+
+            encabezado.addCell(logo);
+            encabezado.addCell("");
+            
+            String ruc = "20602636871";
+            String tel = "(061) 263999";
+            String dir = "Pucallpa";
+            
+            encabezado.addCell("Ruc: "+ruc+"\nTelefono: "+tel+"\nDirección: "+dir);
+            encabezado.addCell(fechaaa);
+            documento.add(encabezado);
+            
+            Paragraph titulo = new Paragraph("Voucher de Alquiler",negrita2);
+            titulo.setAlignment(1);
+            documento.add(titulo);
+            
+            //datos del cliente
+            documento.add(new Paragraph("\nCliente:  " + aaLogearTarjeta.nombre + " " + aaLogearTarjeta.apellidoP + " " + aaLogearTarjeta.apellidoM));
+            documento.add(new Paragraph("DNI:       " + aaLogearTarjeta.dniii));
+            
+            //peliculas
+            documento.add(new Paragraph("\nPeliculas Alquiladas",negrita3));
+            documento.add(new Paragraph("\n"));
+            PdfPTable tablaP = new PdfPTable(4);
+            tablaP.setWidthPercentage(100);
+            tablaP.getDefaultCell().setBorder(0);
+            float[] clumnasP = new float[]{10f, 50f, 15f, 20f};
+            tablaP.setWidths(clumnasP);
+            tablaP.setHorizontalAlignment(Element.ALIGN_LEFT);
+            PdfPCell p1 = new  PdfPCell(new Phrase("Nro",negrita));
+            PdfPCell p2 = new  PdfPCell(new Phrase("Pelicula",negrita));
+            PdfPCell p3 = new  PdfPCell(new Phrase("Cantidad",negrita));
+            PdfPCell p4 = new  PdfPCell(new Phrase("Precio",negrita));
+            p1.setBorder(0);
+            p2.setBorder(0);
+            p3.setBorder(0);
+            p4.setBorder(0);
+            p1.setBackgroundColor(BaseColor.DARK_GRAY);
+            p2.setBackgroundColor(BaseColor.DARK_GRAY);
+            p3.setBackgroundColor(BaseColor.DARK_GRAY);
+            p4.setBackgroundColor(BaseColor.DARK_GRAY);
+            tablaP.addCell(p1);
+            tablaP.addCell(p2);
+            tablaP.addCell(p3);
+            tablaP.addCell(p4);
+            for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++){
+                int idPeli=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
+                String nombrePeli = ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 1).toString();
+                String cantPeli = ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString();
+                String precioPeli = ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 2).toString();
+                int nroo= i+1;
+                String nro = "" + nroo;
+                
+                tablaP.addCell(nro);
+                tablaP.addCell(nombrePeli);
+                tablaP.addCell(cantPeli);
+                tablaP.addCell(precioPeli);
+            }
+            
+            documento.add(tablaP);
+            
+            documento.add(new Paragraph("\nImporte Total: " + ddMenuAlquierr.precioTotal, negrita3));
+            
+        } catch (BadElementException ex) {
+            Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        documento.close();
+        
     }
     
     public void abrirPDF(String codigo){
@@ -270,32 +400,32 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
             
             if(cont==1){
                 if(saldoTarjeta>=ddMenuAlquierr.precioTotal){
-                ingresarPedidoPelicula();
-                ingresarVoucherPedido();
-                descontarSaldo();
-                
-                int capcod,capcan;
-                for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++)
-                {
-                    capcod=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
-                    capcan=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
-                    descontarstock(capcod, capcan);
-                }
+                    ingresarPedidoPelicula();
+                    ingresarVoucherPedido();
+                    descontarSaldo();
+
+                    int capcod,capcan;
+                    for(int i=0;i<ddeAñadirAlquiler.tablaPelicula.getRowCount();i++)
+                    {
+                        capcod=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 0).toString());
+                        capcan=Integer.parseInt(ddeAñadirAlquiler.tablaPelicula.getValueAt(i, 3).toString());
+                        descontarstock(capcod, capcan);
+                    }
                     try {
-                        generarPDF(codPP);
+                        pdf(codPP);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (DocumentException ex) {
                         Logger.getLogger(ddfConfirmarAlquiler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
+                    JOptionPane.showMessageDialog(null, "Tramite de Alquiler con exito","Mensaje",1);
+                
+                    abrirPDF(codPP);
+                    
                 }else{
                     JOptionPane.showMessageDialog(null, "Usted no cuenta con saldo suficiente para realizar el alquiler");
                 }
-                
-                JOptionPane.showMessageDialog(null, "Tramite de Alquiler con exito","Mensaje",1);
-                
-                abrirPDF(codPP);
                 
                 this.dispose();
             }else{

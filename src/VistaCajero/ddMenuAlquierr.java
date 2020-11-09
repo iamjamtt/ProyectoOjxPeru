@@ -68,7 +68,7 @@ public class ddMenuAlquierr extends javax.swing.JInternalFrame {
     
     void cargarPelicula(String valor){
         
-        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%' AND "+" cantidadP>"+0;
+        String mostrar="SELECT * FROM Pelicula WHERE nombreP LIKE '%"+valor+"%' AND "+" cantidadP>"+0+ " AND estadoP="+1;
         
         String []titulos={"NRO","CARATULA","NOMBRE","PRECIO","STOCK"};
         Object []Registros=new Object[5];

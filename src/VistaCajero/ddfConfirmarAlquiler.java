@@ -197,6 +197,9 @@ public class ddfConfirmarAlquiler extends javax.swing.JInternalFrame {
         
         saldoFinal = saldoTarjeta - saldoADescontar;
         
+        System.out.println("Saldo a descontar: " + saldoADescontar);
+        System.out.println("Saldo a final: " + saldoFinal);
+        
         String modi="UPDATE Tarjeta SET saldoTarjeta="+saldoFinal+", estadoTarjeta="+3+" WHERE idTarjeta="+aaLogearTarjeta.idTarjeta;
         try {
             PreparedStatement pst = cn.prepareStatement(modi);

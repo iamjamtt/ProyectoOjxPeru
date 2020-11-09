@@ -33,6 +33,7 @@ public class bbPrincipal extends javax.swing.JFrame {
         this.getContentPane().setBackground(Color.WHITE);
         txtNombre.setEditable(false);
         mostrarNombre();
+        obtenersaldo();
         comporbarSaldoTarjeta();
     }
     
@@ -46,19 +47,35 @@ public class bbPrincipal extends javax.swing.JFrame {
             if(rs.next()){
                 idCliente = rs.getInt("idCliente");
                 nombre = rs.getString("nombre");
-                saldoTarjeta = rs.getDouble("saldoTarjeta");
             }
             
             txtNombre.setText(nombre);
             
-            saldoTarjeta += cdConfirmarRecargaa.total;
-            
             System.out.println("idCliente >> " + idCliente);
             System.out.println("Nombre >> " + nombre);
-            System.out.println("SaldoTarjeta >> " + saldoTarjeta);
          
         } catch (SQLException ex) {
             System.out.println("Error Mostrar Nombre Cliente -- " + ex);
+        }   
+    }
+    
+    void obtenersaldo(){
+        String mostrar = "select * from Cliente c INNER JOIN Tarjeta t ON c.idTarjeta = t.idTarjeta WHERE t.idTarjeta = " + aaLogearTarjeta.idTarjeta;
+        String nombre="";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(mostrar);
+            
+            if(rs.next()){
+                saldoTarjeta = rs.getDouble("saldoTarjeta");
+            }
+            
+            saldoTarjeta += cdConfirmarRecargaa.total;
+            
+            System.out.println("SaldoTarjeta >> " + saldoTarjeta);
+         
+        } catch (SQLException ex) {
+            System.out.println("Error obtener saldo -- " + ex);
         }   
     }
     
@@ -406,6 +423,7 @@ public class bbPrincipal extends javax.swing.JFrame {
 
     private void panelRecargaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRecargaMouseClicked
         // TODO add your handling code here:
+        obtenersaldo();
         ccMenuRecargaa menuRecarga = new ccMenuRecargaa();
         escritorio.add(menuRecarga);
         menuRecarga.show();
